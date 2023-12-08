@@ -4,3 +4,6 @@ testes.py
 utils.py
 README.md
 geckodriver.log
+
+build
+dist

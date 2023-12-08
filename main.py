@@ -21,15 +21,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
-print("\n\033[92mIniciando o programa...\033[0m")
 
-url_site = input("\nDigite a url do livro que está presente no site da archive.org \n\033[92m ->\033[0m ")
+try:
 
-navegador = input("\nPor favor,insira o navegador que você está usando (edge,firefox ou chrome) \n\033[92m ->\033[0m ")
+     print("\n\033[92mIniciando o programa...\033[0m")
 
-armazenarImg = input('\nDefina o caminho onde os prints serão salvos(E.g. /computador/Downloads/nome_do_arquivo) \n\033[92m ->\033[0m ')
+     url_site = input("\nDigite a url do livro que esta presente no site da archive.org \n\033[92m ->\033[0m ")
 
-tempoParaScreenshots = input('\nDefina o tempo em segundos no qual os prints serão tirados\n(depende da velocidade da internet, é importante garantir\nque as páginas serão totalmente carregadas para tirar os prints) \n\033[92m ->\033[0m ')
+     navegador = input("\nPor favor, insira o navegador que você esta usando (edge,firefox ou chrome) \n\033[92m ->\033[0m ")
+
+     armazenarImg = input('\nDefina o caminho onde os prints serao salvos(E.g. /computador/Downloads/nome_do_arquivo) \n\033[92m ->\033[0m ')
+
+     tempoParaScreenshots = input('\nDefina o intervalo em segundos no qual os prints serao capturados\n(depende da velocidade da internet, e importante garantir\nque as paginas serão totalmente carregadas para tirar os prints) \n\033[92m ->\033[0m ')
+
+except UnicodeDecodeError:
+     print("Ocorreu um erro de decodificação Unicode. Por favor, verifique a entrada.")
 
 if navegador.lower() == 'edge':
    options = webdriver.EdgeOptions()
@@ -47,9 +53,13 @@ elif navegador.lower() == 'chrome':
    webdriver_service = Service(ChromeDriverManager().install())
    browser = webdriver.Chrome(service=webdriver_service, options=options)
 else:
-   print("Navegador não suportado")
+   print("Navegador nao suportado")
 
-print("\n\033[92mCarregando página...\033[0m")
+try:
+     print("\n\033[92mCarregando pagina...\033[0m")
+
+except UnicodeDecodeError:
+     print("Ocorreu um erro de decodificação Unicode. Por favor, verifique a entrada.")
 
 for i in tqdm(range(1)):
    browser.get(url_site)
@@ -58,17 +68,29 @@ time.sleep(3)
 
 browser.fullscreen_window()
 
-# click: botão tela cheia.
-browser.find_element('xpath','//*[@id="BookReader"]/div[2]/div/nav/ul[2]/li[11]/button').click()
+browser.set_window_size(1600, 800)
 
+time.sleep(8)
+
+try:
+    # click: botão tela cheia.
+    browser.find_element('xpath','//*[@id="BookReader"]/div[2]/div/nav/ul[2]/li[11]/button').click()
+
+except NoSuchElementException:
+
+    print("elemento nao encontrado no DOOM")
 # -------------------------------------------------------------------------------
 
 time.sleep(3)
 
-# set: display:none; na barra de anuncios.
-element = browser.find_element('xpath', '//*[@id="IABookReaderMessageWrapper"]')
+try:
+    # set: display:none; na barra de anuncios.
+    element = browser.find_element('xpath', '//*[@id="IABookReaderMessageWrapper"]')
+    browser.execute_script("arguments[0].style.display = 'none';", element)
 
-browser.execute_script("arguments[0].style.display = 'none';", element)
+except NoSuchElementException:
+
+    print("elemento nao encontrado no DOOM")
 
 xpaths = ['//*[@id="frame"]/div/nav', '//*[@id="frame"]/div/nav/div[1]']
 
@@ -77,7 +99,7 @@ for xpath in xpaths:
         elemento = browser.find_element('xpath', xpath)
         browser.execute_script("arguments[0].style.opacity = '0';", ocultarIcones)
     except NoSuchElementException:
-        print(f"Elemento com XPath {xpath} não encontrado.")
+        print(f"Elemento com XPath {xpath} nao encontrado.")
 # -------------------------------------------------------------------------------
 
 time.sleep(1)
@@ -91,13 +113,19 @@ element = browser.find_element('xpath', '//*[@id="BookReader"]/div[2]/div/nav/ul
 text = element.text 
 
 match = re.search(r'\((\d+) of (\d+)\)', text)
+
 if match:
+
     first_number = int(match.group(1)) 
     second_number = int(match.group(2))
 
-removeBarra = browser.find_element('xpath', '//*[@id="BookReader"]/div[2]')
+try: 
+   removeBarra = browser.find_element('xpath', '//*[@id="BookReader"]/div[2]')
+   browser.execute_script("arguments[0].style.opacity = '0';", removeBarra)
 
-browser.execute_script("arguments[0].style.opacity = '0';", removeBarra)  
+except NoSuchElementException:
+
+   print("elemento nao encontrado no DOOM")
 
 for i in tqdm(range(second_number)):
 

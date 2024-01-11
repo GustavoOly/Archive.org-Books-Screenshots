@@ -23,7 +23,6 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 
 try:
-
      print("\n\033[92mIniciando o programa...\033[0m")
 
      url_site = input("\nDigite a url do livro que esta presente no site da archive.org \n\033[92m ->\033[0m ")
@@ -70,7 +69,7 @@ browser.fullscreen_window()
 
 browser.set_window_size(1600, 800)
 
-time.sleep(8)
+time.sleep(3)
 
 try:
     # click: botão tela cheia.
@@ -79,7 +78,6 @@ try:
 except NoSuchElementException:
 
     print("elemento nao encontrado no DOOM")
-# -------------------------------------------------------------------------------
 
 time.sleep(3)
 
@@ -100,7 +98,6 @@ for xpath in xpaths:
         browser.execute_script("arguments[0].style.opacity = '0';", ocultarIcones)
     except NoSuchElementException:
         print(f"Elemento com XPath {xpath} nao encontrado.")
-# -------------------------------------------------------------------------------
 
 time.sleep(1)
 
@@ -135,8 +132,6 @@ for i in tqdm(range(second_number)):
     
    # click: botão next.
    browser.find_element('xpath', '//*[@id="BookReader"]/div[2]/div/nav/ul[2]/li[3]/button').click()
-
-# -------------------------------------------------------------------------------------------------
 
 print("\n\033[92mPrints concluidos com sucesso!\033[0m")
 input('\nPressione ENTER para sair...')

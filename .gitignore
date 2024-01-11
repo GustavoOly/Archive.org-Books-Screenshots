@@ -4,6 +4,6 @@ testes.py
 utils.py
 README.md
 geckodriver.log
-
+main.spec
 build
 dist
